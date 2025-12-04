@@ -1,155 +1,295 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-@section('title', 'Dashboard - UNC Mafra')
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard – Gestão de Salas</title>
 
-@section('content')
-<!-- Cards de Estatísticas -->
-<div class="row mb-5">
-    <div class="col-md-4 mb-3">
-        <div class="card stats-card border-0 bg-white">
-            <div class="card-body text-center">
-                <div class="stats-number text-primary">{{ $totalSalas }}</div>
-                <div class="stats-label text-secondary">Total de Salas</div>
-            </div>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            background: #f1f5f9;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: #1f2937;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 8px;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #374151;
+            color: white;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 260px; /* alinha ao lado da sidebar */
+            right: 0;
+             height: 60px;
+            background: #1e293b;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            gap: 20px;
+            z-index: 10;
+}
+
+
+        /* CONTEÚDO */
+        .content {
+            padding: 90px 30px 30px;
+            max-width: 1100px;
+            margin-left: 340px;   /* empurra mais para a direita */
+            margin-right: auto;
+}
+
+
+
+
+        /* CARDS ESTATÍSTICAS */
+        .stats {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 260px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .stat-title {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* BLOCOS */
+        .bloco-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 25px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* CARDS DE SALA */
+        .sala-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            width: 180px;
+            border: 2px solid #d1d5db;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .sala-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .codigo {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .cap-info {
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .recursos {
+            font-size: 12px;
+            color: #475569;
+            margin-top: 5px;
+        }
+
+        /* STATUS COLORS */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            float: right;
+        }
+
+        .verde { background: #22c55e; }
+        .amarelo { background: #eab308; }
+        .vermelho { background: #ef4444; }
+
+
+        .btn-nova-reserva {
+    background-color: #16a34a; /* verde */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+.btn-nova-reserva:hover {
+    background-color: #15803d; /* verde escuro no hover */
+}
+
+.btn-agenda {
+    background-color: #2563eb; /* azul */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+.btn-agenda:hover {
+    background-color: #1d4ed8; /* azul escuro no hover */
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: -20px;
+    margin-bottom: 30px;
+    padding-right: 10px;
+}
+    
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🏫 UNC Mafra</h2>
+
+        <a href="#">➕ Nova Sala</a>
+        <a href="#">🔍 Buscar</a>
+        <a href="#">🗺️ Mapa</a>
+        <a href="#">⭐ Prioridades</a>
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        Início
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="content">
+
+       <!-- Estatísticas -->
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-title">Total de Salas</div>
+        <div class="stat-number">{{ $totalSalas }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Ocupadas Agora</div>
+        <div class="stat-number" style="color:#ef4444;">
+            {{ $ocupadasAgora }}
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card stats-card border-0 bg-white">
-            <div class="card-body text-center">
-                <div class="stats-number text-danger">{{ $ocupadasAgora }}</div>
-                <div class="stats-label text-secondary">Ocupadas Agora</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card stats-card border-0 bg-white">
-            <div class="card-body text-center">
-                <div class="stats-number text-success">{{ $disponiveis }}</div>
-                <div class="stats-label text-secondary">Disponíveis</div>
-            </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Disponíveis</div>
+        <div class="stat-number" style="color:#22c55e;">
+            {{ $disponiveis }}
         </div>
     </div>
 </div>
 
-<!-- Listagem de Salas por Bloco -->
-@foreach($blocos as $bloco)
-<div class="bloco-card mb-4">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0"><i class="bi bi-building me-2"></i>{{ $bloco->descricao }}</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            @foreach($bloco->salas as $sala)
-            @php
-                $recursosTraduzidos = [
-                    'datashow' => 'Datashow',
-                    'lab_info' => 'Lab. Info',
-                    'computadores' => 'Computadores',
-                    'quadro' => 'Quadro',
-                    'manutencao' => 'Manutenção',
-                    '30_pcs' => '30 PCs',
-                    'microscopios' => 'Microscópios',
-                    'bancada' => 'Bancada',
-                    'bancada_quimica' => 'Bancada Química',
-                    'exaustor' => 'Exaustor',
-                    'projetor' => 'Projetor',
-                    'som' => 'Som',
-                    'palco' => 'Palco',
-                    'ar_condicionado' => 'Ar Condicionado',
-                    'tela' => 'Tela',
-                    'lab' => 'Laboratório',
-                    'internet' => 'Internet',
-                    'outros' => 'Outros',
-                ];
-                
-                $recursosArray = json_decode($sala->recursos, true) ?? [];
-                $recursosTexto = '';
-                if (!empty($recursosArray)) {
-                    $recursosTraduzidosArray = array_map(function($item) use ($recursosTraduzidos) {
-                        return $recursosTraduzidos[$item] ?? $item;
-                    }, $recursosArray);
-                    $recursosTexto = implode(', ', $recursosTraduzidosArray);
-                }
-            @endphp
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card h-100 sala-card border-{{ $sala->status == 'disponivel' ? 'success' : ($sala->status == 'ocupada' ? 'danger' : 'warning') }}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title mb-0">{{ $sala->codigo }}</h5>
-                            <span class="badge bg-{{ $sala->status == 'disponivel' ? 'success' : ($sala->status == 'ocupada' ? 'danger' : 'warning') }}">
-                                {{ ucfirst($sala->status) }}
-                            </span>
+<!-- Botões alinhados à direita -->
+<div class="actions">
+    <button class="btn-nova-reserva">+ Nova Reserva</button>
+    <button class="btn-agenda">Agenda</button>
+</div>
+
+
+        <!-- Listagem por bloco -->
+        @foreach($blocos as $bloco)
+
+            <div class="bloco-title">📌 Bloco {{ $bloco->nome }} – {{ $bloco->descricao }}</div>
+
+            <div class="sala-container">
+                @foreach($bloco->salas as $sala)
+
+                    @php
+                        $cor = [
+                            'disponivel' => 'verde',
+                            'ocupada' => 'vermelho',
+                            'manutencao' => 'amarelo',
+                        ][$sala->status];
+                    @endphp
+
+                    <div class="sala-card">
+                        <div class="codigo">
+                            {{ $sala->codigo }}
+                            <div class="status-dot {{ $cor }}"></div>
                         </div>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ $sala->nome }}</h6>
-                        <p class="card-text">
-                            <strong>Capacidade:</strong> {{ $sala->capacidade }} pessoas
-                        </p>
-                        @if($recursosTexto)
-                        <p class="card-text">
-                            <small class="text-muted">
-                                <strong>Recursos:</strong> {{ $recursosTexto }}
-                            </small>
-                        </p>
-                        @endif
-                        <div class="mt-3">
-                            <a href="{{ route('salas.show', $sala->id) }}" class="btn btn-sm btn-outline-primary">Detalhes</a>
-                            <a href="{{ route('salas.edit', $sala->id) }}" class="btn btn-sm btn-outline-secondary">Editar</a>
+
+                        <div class="cap-info">Cap: {{ $sala->capacidade }}</div>
+
+                        <div class="recursos">
+                            @foreach(json_decode($sala->recursos ?? '[]') as $r)
+                                • {{ $r }} <br>
+                            @endforeach
                         </div>
                     </div>
-                </div>
+
+                @endforeach
             </div>
-            @endforeach
-        </div>
+
+        @endforeach
     </div>
-</div>
-@endforeach
 
-@if($totalSalas === 0)
-<div class="text-center py-5">
-    <i class="bi bi-building display-1 text-muted"></i>
-    <h4 class="mt-3">Nenhuma sala cadastrada</h4>
-    <p class="text-muted">Comece criando sua primeira sala clicando no botão abaixo ou no menu "Nova Sala".</p>
-    <a href="{{ route('salas.create') }}" class="btn btn-unc btn-lg">
-        <i class="bi bi-plus-circle me-2"></i> Criar Primeira Sala
-    </a>
-</div>
-@endif
-@endsection
-
-@push('styles')
-<style>
-    .stats-card {
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        transition: transform 0.3s, box-shadow 0.3s;
-        overflow: hidden;
-    }
-    
-    .stats-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    }
-    
-    .stats-number {
-        font-size: 3.5rem;
-        font-weight: 700;
-        line-height: 1;
-        margin-bottom: 10px;
-    }
-    
-    .stats-label {
-        font-size: 1rem;
-        font-weight: 500;
-        opacity: 0.9;
-    }
-    
-    .sala-card {
-        transition: transform 0.3s;
-    }
-    
-    .sala-card:hover {
-        transform: translateY(-5px);
-    }
-</style>
-@endpush
+</body>
+</html>
