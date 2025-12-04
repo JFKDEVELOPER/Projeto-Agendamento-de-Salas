@@ -6,17 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
 class Bloco extends Model
 {
-    use HasFactory;
-
     protected $fillable = ['nome', 'descricao'];
-    
-    /**
-     * Relacionamento: Um bloco tem muitas salas
-     */
-    public function salas(): HasMany
+
+    public function salas()
     {
         return $this->hasMany(Sala::class);
     }
 }
+
+
+
