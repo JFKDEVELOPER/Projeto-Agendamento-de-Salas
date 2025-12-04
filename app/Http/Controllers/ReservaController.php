@@ -8,14 +8,16 @@ use App\Models\Reserva;
 
 class ReservaController extends Controller
 {
+    // Página de reservas
     public function index()
     {
-        $salas = Sala::where('status', 'disponivel')->get();
-        $reservas = Reserva::with('sala')->get();
+        $salas = Sala::where('status', 'disponivel')->get(); // salas disponíveis
+        $reservas = Reserva::with('sala.bloco')->get();       // todas as reservas com sala e bloco
 
         return view('salas.reservas', compact('salas', 'reservas'));
     }
 
+    // Criar nova reserva
     public function store(Request $request)
     {
         $request->validate([
@@ -35,5 +37,20 @@ class ReservaController extends Controller
         $sala->save();
 
         return redirect()->route('reservas.index')->with('success', 'Reserva criada com sucesso!');
+    }
+
+    // Remover reserva
+    public function destroy(Reserva $reserva)
+    {
+        // Atualizar status da sala para disponível antes de deletar
+        $sala = $reserva->sala;
+        if($sala){
+            $sala->status = 'disponivel';
+            $sala->save();
+        }
+
+        $reserva->delete();
+
+        return redirect()->route('reservas.index')->with('success', 'Reserva removida com sucesso!');
     }
 }

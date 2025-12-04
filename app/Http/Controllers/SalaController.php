@@ -8,19 +8,18 @@ use Illuminate\Http\Request;
 
 class SalaController extends Controller
 {
-    // FORM DE CRIAÇÃO
+    // FORM DE CRIAÇÃO DE SALA
     public function create()
     {
-        $blocos = Bloco::all();  // para o select
-        $salas  = Sala::all();   // buscar todas as salas para exclusão
+        $blocos = Bloco::all();  // Para o select de blocos
+        $salas  = Sala::all();   // Buscar todas as salas para listagem/exclusão
 
         return view('salas.create', compact('blocos', 'salas'));
     }
 
-    // SALVAR NO BANCO
+    // SALVAR SALA NO BANCO
     public function store(Request $request)
     {
-        // Validação com nome obrigatório
         $request->validate([
             'nome' => 'required|string|max:100',
             'capacidade' => 'required|integer|min:1',
@@ -29,9 +28,9 @@ class SalaController extends Controller
         ]);
 
         Sala::create([
-            'nome' => $request->nome,           // obrigatório
+            'nome' => $request->nome,
             'capacidade' => $request->capacidade,
-            'status' => 'disponivel',           // status padrão
+            'status' => 'disponivel',
             'bloco_id' => $request->bloco_id,
             'recursos' => json_encode($request->recursos),
         ]);
@@ -45,5 +44,36 @@ class SalaController extends Controller
         $sala->delete();
 
         return redirect()->back()->with('success', 'Sala excluída com sucesso!');
+    }
+
+    // LISTAR SALAS PARA PRIORIDADES
+    public function prioridades()
+    {
+        $salas = Sala::with('bloco')->get(); // Puxa também informações do bloco
+        return view('salas.prioridades', compact('salas'));
+    }
+
+    // ADICIONAR OU ATUALIZAR OBSERVAÇÃO
+    public function adicionarObservacao(Request $request)
+    {
+        $request->validate([
+            'sala_id' => 'required|exists:salas,id',
+            'observacao' => 'required|string|max:500',
+        ]);
+
+        $sala = Sala::findOrFail($request->sala_id);
+        $sala->observacao = $request->observacao;
+        $sala->save();
+
+        return redirect()->route('prioridades')->with('success', 'Observação adicionada com sucesso!');
+    }
+
+    // REMOVER OBSERVAÇÃO
+    public function removerObservacao(Sala $sala)
+    {
+        $sala->observacao = null;
+        $sala->save();
+
+        return redirect()->route('prioridades')->with('success', 'Observação removida com sucesso!');
     }
 }

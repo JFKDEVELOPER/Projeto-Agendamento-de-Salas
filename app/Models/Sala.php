@@ -9,22 +9,24 @@ class Sala extends Model
 {
     use HasFactory;
 
+    // Permite atribuição em massa
     protected $fillable = [
-        'bloco_id',
         'nome',
+        'bloco_id',
         'capacidade',
-        'recursos',
         'status',
-        'observacoes'
+        'recursos',
+        'prioridade', // ⚡ Certifique-se que está aqui
     ];
 
-    protected $casts = [
-        'recursos' => 'array'
-    ];
-
-    // Relacionamento com Bloco
+    // Relacionamentos
     public function bloco()
     {
         return $this->belongsTo(Bloco::class);
+    }
+
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
     }
 }

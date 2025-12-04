@@ -84,7 +84,14 @@
                         <div class="font-semibold text-gray-700">{{ $sala->nome }} – Cap: {{ $sala->capacidade }}</div>
                         <div class="text-gray-500 text-sm">
                             Bloco: {{ $sala->bloco->nome ?? 'N/A' }}<br>
-                            Recursos: {{ implode(', ', json_decode($sala->recursos ?? '[]')) }}
+                            {{-- Decodifica recursos com segurança --}}
+                            @php
+                                $recursosArray = json_decode($sala->recursos ?? '[]', true);
+                                if (!is_array($recursosArray)) {
+                                    $recursosArray = [$sala->recursos];
+                                }
+                            @endphp
+                            Recursos: {{ implode(', ', $recursosArray) }}
                         </div>
                     </div>
                     <form action="{{ route('salas.destroy', $sala->id) }}" method="POST" 
