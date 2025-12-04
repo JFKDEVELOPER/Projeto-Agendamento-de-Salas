@@ -67,7 +67,6 @@
                         if (!empty($sala->recursos)) {
                             $decoded = json_decode($sala->recursos, true);
 
-                            // Se ainda for string (JSON duplo), decodifica de novo
                             if (is_string($decoded)) {
                                 $decoded = json_decode($decoded, true);
                             }
@@ -79,6 +78,7 @@
 
                         $reservaNome = optional($sala->reservas->first())->nome;
                         $prioridade = $sala->prioridade ?? null;
+                        $observacao = $sala->observacao ?? null;
                     @endphp
 
                     <div class="bg-white rounded-2xl shadow p-4">
@@ -108,6 +108,13 @@
                                 <div>• Nenhum recurso</div>
                             @endforelse
                         </div>
+
+                        {{-- Exibir observação, se houver --}}
+                        @if($observacao)
+                            <div class="text-gray-700 text-sm mt-2 italic bg-gray-100 p-2 rounded">
+                                <strong>Observação:</strong> {{ $observacao }}
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
