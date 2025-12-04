@@ -1,163 +1,97 @@
 @extends('layouts.app')
 
-@section('title', 'Nova Sala - UNC Mafra')
+@section('title', 'Criar Sala')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-plus-circle me-2"></i> Criar Nova Sala</h4>
+<div class="min-h-screen bg-gray-100 flex justify-center py-12 px-4 animate-fadeIn">
+
+    <div class="w-full max-w-xl bg-white shadow-xl rounded-3xl p-10">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+            <span class="text-blue-600 text-4xl">+</span> Criar Nova Sala
+        </h1>
+
+        <form action="{{ route('salas.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            {{-- Sala --}}
+            <div>
+                <label class="block text-gray-700 font-semibold">Sala</label>
+                <input type="text" name="codigo" placeholder="Ex: A101" required
+                    class="w-full mt-2 px-4 py-3 bg-gray-50 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition">
             </div>
-            <div class="card-body">
-                <form action="{{ route('salas.store') }}" method="POST">
-                    @csrf
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="bloco_id" class="form-label">Bloco *</label>
-                            <select class="form-select @error('bloco_id') is-invalid @enderror" id="bloco_id" name="bloco_id" required>
-                                <option value="">Selecione um bloco</option>
-                                @foreach($blocos as $bloco)
-                                    <option value="{{ $bloco->id }}" {{ old('bloco_id') == $bloco->id ? 'selected' : '' }}>
-                                        {{ $bloco->nome }} - {{ $bloco->descricao }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('bloco_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="codigo" class="form-label">Código da Sala *</label>
-                            <input type="text" class="form-control @error('codigo') is-invalid @enderror" 
-                                   id="codigo" name="codigo" value="{{ old('codigo') }}" 
-                                   placeholder="Ex: A101, B201, C301" required>
-                            @error('codigo')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="nome" class="form-label">Nome da Sala *</label>
-                        <input type="text" class="form-control @error('nome') is-invalid @enderror" 
-                               id="nome" name="nome" value="{{ old('nome') }}" 
-                               placeholder="Ex: Sala de Aula 101, Laboratório de Informática" required>
-                        @error('nome')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="capacidade" class="form-label">Capacidade *</label>
-                            <input type="number" class="form-control @error('capacidade') is-invalid @enderror" 
-                                   id="capacidade" name="capacidade" value="{{ old('capacidade') }}" 
-                                   min="1" max="500" required>
-                            @error('capacidade')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="tipo" class="form-label">Tipo de Sala *</label>
-                            <select class="form-select @error('tipo') is-invalid @enderror" id="tipo" name="tipo" required>
-                                <option value="">Selecione o tipo</option>
-                                <option value="aula" {{ old('tipo') == 'aula' ? 'selected' : '' }}>Sala de Aula</option>
-                                <option value="laboratorio" {{ old('tipo') == 'laboratorio' ? 'selected' : '' }}>Laboratório</option>
-                                <option value="auditorio" {{ old('tipo') == 'auditorio' ? 'selected' : '' }}>Auditório</option>
-                            </select>
-                            @error('tipo')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Recursos Disponíveis</label>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="datashow" id="datashow">
-                                    <label class="form-check-label" for="datashow">Datashow/Projetor</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="quadro" id="quadro">
-                                    <label class="form-check-label" for="quadro">Quadro Branco</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="ar_condicionado" id="ar">
-                                    <label class="form-check-label" for="ar">Ar Condicionado</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="computadores" id="computadores">
-                                    <label class="form-check-label" for="computadores">Computadores</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="internet" id="internet">
-                                    <label class="form-check-label" for="internet">Internet</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="som" id="som">
-                                    <label class="form-check-label" for="som">Sistema de Som</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="laboratorio" id="lab">
-                                    <label class="form-check-label" for="lab">Laboratório</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="bancada" id="bancada">
-                                    <label class="form-check-label" for="bancada">Bancada</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="recursos[]" value="outros" id="outros">
-                                    <label class="form-check-label" for="outros">Outros</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="status" class="form-label">Status *</label>
-                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
-                                <option value="disponivel" {{ old('status') == 'disponivel' ? 'selected' : '' }}>Disponível</option>
-                                <option value="ocupada" {{ old('status') == 'ocupada' ? 'selected' : '' }}>Ocupada</option>
-                                <option value="manutencao" {{ old('status') == 'manutencao' ? 'selected' : '' }}>Em Manutenção</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="observacoes" class="form-label">Observações</label>
-                        <textarea class="form-control @error('observacoes') is-invalid @enderror" 
-                                  id="observacoes" name="observacoes" rows="3" 
-                                  placeholder="Informações adicionais sobre a sala...">{{ old('observacoes') }}</textarea>
-                        @error('observacoes')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('salas.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left me-1"></i> Voltar
-                        </a>
-                        <button type="submit" class="btn btn-unc">
-                            <i class="bi bi-save me-1"></i> Salvar Sala
-                        </button>
-                    </div>
-                </form>
+
+            {{-- Capacidade --}}
+            <div>
+                <label class="block text-gray-700 font-semibold">Capacidade</label>
+                <input type="number" min="1" step="1" name="capacidade" placeholder="Ex: 40" required
+                    class="w-full mt-2 px-4 py-3 bg-gray-50 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition">
             </div>
-        </div>
+
+            {{-- Bloco --}}
+            <div>
+                <label class="block text-gray-700 font-semibold">Bloco</label>
+                <select name="bloco_id" required
+                    class="w-full mt-2 px-4 py-3 bg-gray-50 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-400 transition">
+                    <option disabled selected>Selecione um bloco</option>
+                    @foreach($blocos as $bloco)
+                        <option value="{{ $bloco->id }}">
+                            {{ $bloco->nome }} – {{ $bloco->descricao }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Recursos --}}
+            <div>
+                <label class="block text-gray-700 font-semibold">Recursos (opcional)</label>
+                <select id="recursos" name="recursos[]" multiple
+                    class="w-full mt-2 h-40 px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-400 transition">
+                    <option value="Projetor">Projetor</option>
+                    <option value="Computadores">Computadores</option>
+                    <option value="Ar-condicionado">Ar-condicionado</option>
+                    <option value="TV">TV</option>
+                </select>
+
+                <div class="flex gap-3 mt-3">
+                    <input id="novoRecurso" type="text" placeholder="Adicionar recurso personalizado"
+                        class="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-400 transition">
+                    <button type="button" onclick="adicionarRecurso()"
+                        class="px-5 py-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-2xl transition transform hover:scale-105">
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+
+            {{-- Botão salvar --}}
+            <div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-md transition transform hover:-translate-y-1 hover:shadow-lg">
+                    Salvar Sala
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function adicionarRecurso() {
+    const campo = document.getElementById("novoRecurso");
+    const valor = campo.value.trim();
+    const select = document.getElementById("recursos");
+
+    if (!valor) {
+        alert("Digite um recurso antes de adicionar.");
+        return;
+    }
+
+    const option = document.createElement("option");
+    option.value = valor;
+    option.text = valor;
+    option.selected = true;
+    select.appendChild(option);
+    campo.value = "";
+}
+</script>
+@endpush

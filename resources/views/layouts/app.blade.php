@@ -1,155 +1,62 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'UNC Mafra – Gestão de Salas')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Estilo fixo da sidebar e topbar -->
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --light-bg: #f8f9fa;
-        }
-        
         body {
-            background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            font-family: "Inter", sans-serif;
         }
-        
-        .navbar-unc {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1a2530 100%);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        .sidebar {
+            width: 260px;
         }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.4rem;
+
+        .topbar {
+            left: 260px;
         }
-        
-        .nav-link {
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: all 0.3s;
+
+        /* Pequena animação opcional para conteúdo */
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
         }
-        
-        .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-        
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: none;
-        }
-        
-        .btn-unc {
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-        
-        .btn-unc:hover {
-            background: #2980b9;
-            color: white;
-        }
-        
-        footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            border-top: 1px solid #dee2e6;
-            color: #6c757d;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
+
+    <!-- Estilos adicionais da página -->
     @stack('styles')
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-unc">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <i class="bi bi-building me-2"></i>UNC Mafra – Gestão de Salas
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">
-                            <i class="bi bi-house me-1"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('salas.index') }}">
-                            <i class="bi bi-door-open me-1"></i> Todas as Salas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('salas.create') }}">
-                            <i class="bi bi-plus-circle me-1"></i> Nova Sala
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('buscar') }}">
-                            <i class="bi bi-search me-1"></i> Buscar
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('mapa') }}">
-                            <i class="bi bi-map me-1"></i> Mapa
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body class="bg-gray-100 flex">
 
-    <!-- Conteúdo Principal -->
-    <main class="py-4">
-        <div class="container">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-            
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-            
-            @if(session('info'))
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    {{ session('info') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-            
-            @yield('content')
-        </div>
-    </main>
+    <!-- Sidebar -->
+    <div class="sidebar fixed h-screen bg-gray-900 text-white p-6 flex flex-col">
+        <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">🏫 UNC Mafra</h2>
+        <a href="{{ route('salas.create') }}" class="flex items-center p-3 mb-2 rounded-lg hover:bg-gray-800 transition">➕ Criar Sala</a>
+        <a href="#" class="flex items-center p-3 mb-2 rounded-lg hover:bg-gray-800 transition">🔍 Buscar</a>
+        <a href="#" class="flex items-center p-3 mb-2 rounded-lg hover:bg-gray-800 transition">🗺️ Mapa</a>
+        <a href="#" class="flex items-center p-3 mb-2 rounded-lg hover:bg-gray-800 transition">⭐ Prioridades</a>
+    </div>
 
-    <!-- Rodapé -->
-    <footer>
-        <div class="container text-center">
-            <p class="mb-0">UNC Mafra – Sistema de Gestão de Salas</p>
-            <small>© {{ date('Y') }} - Versão 1.0</small>
-        </div>
-    </footer>
+    <!-- Topbar -->
+    <div class="topbar fixed top-0 right-0 h-16 bg-gray-800 text-white flex items-center justify-end px-6 shadow-md">
+        Início
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Conteúdo principal -->
+    <div class="content ml-[260px] mt-16 p-8 w-full max-w-7xl">
+        @yield('content')
+    </div>
+
     @stack('scripts')
 </body>
 </html>

@@ -1,295 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard – Gestão de Salas</title>
+@section('content')
+<div class="space-y-8">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: "Inter", sans-serif;
-            background: #f1f5f9;
-            display: flex;
-        }
+    <!-- Estatísticas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white shadow rounded-2xl p-6">
+            <div class="text-gray-500 font-semibold">Total de Salas</div>
+            <div class="text-2xl font-bold text-gray-800 mt-2">{{ $totalSalas }}</div>
+        </div>
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            background: #1f2937;
-            color: white;
-            height: 100vh;
-            padding: 20px;
-            position: fixed;
-        }
+        <div class="bg-white shadow rounded-2xl p-6">
+            <div class="text-gray-500 font-semibold">Ocupadas Agora</div>
+            <div class="text-2xl font-bold text-red-600 mt-2">{{ $ocupadasAgora }}</div>
+        </div>
 
-        .sidebar h2 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            margin-bottom: 10px;
-            color: #d1d5db;
-            text-decoration: none;
-            border-radius: 8px;
-            gap: 10px;
-            transition: 0.2s;
-        }
-
-        .sidebar a:hover {
-            background: #374151;
-            color: white;
-        }
-
-        /* TOPBAR */
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 260px; /* alinha ao lado da sidebar */
-            right: 0;
-             height: 60px;
-            background: #1e293b;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 0 20px;
-            color: white;
-            gap: 20px;
-            z-index: 10;
-}
-
-
-        /* CONTEÚDO */
-        .content {
-            padding: 90px 30px 30px;
-            max-width: 1100px;
-            margin-left: 340px;   /* empurra mais para a direita */
-            margin-right: auto;
-}
-
-
-
-
-        /* CARDS ESTATÍSTICAS */
-        .stats {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 260px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-
-        .stat-title {
-            color: #64748b;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .stat-number {
-            font-size: 28px;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-
-        /* BLOCOS */
-        .bloco-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 25px 0 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* CARDS DE SALA */
-        .sala-card {
-            background: white;
-            border-radius: 10px;
-            padding: 12px;
-            width: 180px;
-            border: 2px solid #d1d5db;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .sala-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .codigo {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .cap-info {
-            font-size: 13px;
-            color: #475569;
-        }
-
-        .recursos {
-            font-size: 12px;
-            color: #475569;
-            margin-top: 5px;
-        }
-
-        /* STATUS COLORS */
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            float: right;
-        }
-
-        .verde { background: #22c55e; }
-        .amarelo { background: #eab308; }
-        .vermelho { background: #ef4444; }
-
-
-        .btn-nova-reserva {
-    background-color: #16a34a; /* verde */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.5);
-    transition: background-color 0.3s ease;
-}
-
-.btn-nova-reserva:hover {
-    background-color: #15803d; /* verde escuro no hover */
-}
-
-.btn-agenda {
-    background-color: #2563eb; /* azul */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.5);
-    transition: background-color 0.3s ease;
-}
-
-.btn-agenda:hover {
-    background-color: #1d4ed8; /* azul escuro no hover */
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: -20px;
-    margin-bottom: 30px;
-    padding-right: 10px;
-}
-    
-
-
-    </style>
-</head>
-
-<body>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2>🏫 UNC Mafra</h2>
-
-        <a href="#">➕ Nova Sala</a>
-        <a href="#">🔍 Buscar</a>
-        <a href="#">🗺️ Mapa</a>
-        <a href="#">⭐ Prioridades</a>
-    </div>
-
-    <!-- Topbar -->
-    <div class="topbar">
-        Início
-    </div>
-
-    <!-- Conteúdo -->
-    <div class="content">
-
-       <!-- Estatísticas -->
-<div class="stats">
-    <div class="stat-card">
-        <div class="stat-title">Total de Salas</div>
-        <div class="stat-number">{{ $totalSalas }}</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-title">Ocupadas Agora</div>
-        <div class="stat-number" style="color:#ef4444;">
-            {{ $ocupadasAgora }}
+        <div class="bg-white shadow rounded-2xl p-6">
+            <div class="text-gray-500 font-semibold">Disponíveis</div>
+            <div class="text-2xl font-bold text-green-600 mt-2">{{ $disponiveis }}</div>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-title">Disponíveis</div>
-        <div class="stat-number" style="color:#22c55e;">
-            {{ $disponiveis }}
-        </div>
+    <!-- Botões de ação -->
+    <div class="flex justify-end gap-4">
+        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-xl shadow transition">
+            + Nova Reserva
+        </button>
+        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-2 rounded-xl shadow transition">
+            Agenda
+        </button>
     </div>
-</div>
 
-<!-- Botões alinhados à direita -->
-<div class="actions">
-    <button class="btn-nova-reserva">+ Nova Reserva</button>
-    <button class="btn-agenda">Agenda</button>
-</div>
+    <!-- Listagem por bloco -->
+    @foreach($blocos as $bloco)
+        <div>
+            <h2 class="text-xl font-bold text-gray-800 mt-6 mb-3 flex items-center gap-2">
+                📌 Bloco {{ $bloco->nome }} – {{ $bloco->descricao }}
+            </h2>
 
-
-        <!-- Listagem por bloco -->
-        @foreach($blocos as $bloco)
-
-            <div class="bloco-title">📌 Bloco {{ $bloco->nome }} – {{ $bloco->descricao }}</div>
-
-            <div class="sala-container">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($bloco->salas as $sala)
-
                     @php
                         $cor = [
-                            'disponivel' => 'verde',
-                            'ocupada' => 'vermelho',
-                            'manutencao' => 'amarelo',
-                        ][$sala->status];
+                            'disponivel' => 'bg-green-500',
+                            'ocupada' => 'bg-red-500',
+                            'manutencao' => 'bg-yellow-400',
+                        ][$sala->status] ?? 'bg-gray-300';
                     @endphp
 
-                    <div class="sala-card">
-                        <div class="codigo">
+                    <div class="bg-white rounded-2xl shadow p-4 relative">
+                        <div class="font-bold text-gray-800 flex justify-between items-center">
                             {{ $sala->codigo }}
-                            <div class="status-dot {{ $cor }}"></div>
+                            <span class="w-3 h-3 rounded-full {{ $cor }}"></span>
                         </div>
-
-                        <div class="cap-info">Cap: {{ $sala->capacidade }}</div>
-
-                        <div class="recursos">
+                        <div class="text-gray-500 text-sm mt-1">Cap: {{ $sala->capacidade }}</div>
+                        <div class="text-gray-500 text-xs mt-2 space-y-1">
                             @foreach(json_decode($sala->recursos ?? '[]') as $r)
                                 • {{ $r }} <br>
                             @endforeach
                         </div>
                     </div>
-
                 @endforeach
             </div>
-
-        @endforeach
-    </div>
-
-</body>
-</html>
+        </div>
+    @endforeach
+</div>
+@endsection
