@@ -49,8 +49,11 @@
 
     <!-- Topbar -->
     <div class="topbar fixed top-0 right-0 h-16 bg-gray-800 text-white flex items-center justify-end px-6 shadow-md">
-        Início
+        <a href="{{ route('dashboard') }}" class="hover:underline">
+            Início
+        </a>
     </div>
+
 
     <!-- Conteúdo principal -->
     <div class="content ml-[260px] mt-16 p-8 w-full max-w-7xl">

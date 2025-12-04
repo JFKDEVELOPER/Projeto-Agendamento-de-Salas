@@ -22,14 +22,11 @@
     </div>
 
     <!-- Botões de ação -->
-    <div class="flex justify-end gap-4">
-        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-xl shadow transition">
-            + Nova Reserva
-        </button>
-        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-2 rounded-xl shadow transition">
-            Agenda
-        </button>
-    </div>
+<a href="{{ route('reservas.index') }}" 
+   class="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-xl shadow transition">
+    + Nova Reserva
+</a>
+
 
     <!-- Listagem por bloco -->
     @foreach($blocos as $bloco)
@@ -46,18 +43,24 @@
                             'ocupada' => 'bg-red-500',
                             'manutencao' => 'bg-yellow-400',
                         ][$sala->status] ?? 'bg-gray-300';
+
+                        $recursos = json_decode($sala->recursos ?? '[]', true);
                     @endphp
 
                     <div class="bg-white rounded-2xl shadow p-4 relative">
                         <div class="font-bold text-gray-800 flex justify-between items-center">
-                            {{ $sala->codigo }}
+                            {{ $sala->nome }}
                             <span class="w-3 h-3 rounded-full {{ $cor }}"></span>
                         </div>
                         <div class="text-gray-500 text-sm mt-1">Cap: {{ $sala->capacidade }}</div>
-                        <div class="text-gray-500 text-xs mt-2 space-y-1">
-                            @foreach(json_decode($sala->recursos ?? '[]') as $r)
-                                • {{ $r }} <br>
-                            @endforeach
+                        <div class="text-gray-500 text-xs mt-2">
+                            @if(!empty($recursos))
+                                @foreach($recursos as $recurso)
+                                    <div>• {{ $recurso }}</div>
+                                @endforeach
+                            @else
+                                <div>• Nenhum recurso</div>
+                            @endif
                         </div>
                     </div>
                 @endforeach
